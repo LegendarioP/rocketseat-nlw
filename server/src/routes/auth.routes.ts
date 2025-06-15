@@ -2,9 +2,10 @@ import { FastifyInstance } from 'fastify'
 import axios from 'axios'
 import { z } from 'zod'
 import { prisma } from '../utils/prisma'
+import { AuthController } from '../controllers/auth.controller'
 
 export async function authRoutes(app: FastifyInstance) {
-  // app.post('/login', )
+  app.post('/login', AuthController.login)
 
   app.post('/register', async (request) => {
     const bodySchema = z.object({

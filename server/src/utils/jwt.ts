@@ -1,11 +1,7 @@
-interface JwtPayload {
-  name: string
-  avatarUrl: string
-  id: string
-}
-
+import { JwtPayload } from '../types/jwt-types'
+import { JwtSignFunction } from '../types/jwt-types';
 export function generateToken(
-  sign: (payload: object, options?: object) => string,
+  sign: JwtSignFunction,
   user: JwtPayload,
 ) {
   return sign(

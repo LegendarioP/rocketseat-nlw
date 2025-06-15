@@ -1,9 +1,9 @@
 import { generateToken } from '../utils/jwt'
 import { prisma } from '../utils/prisma'
-import { FastifyInstance } from 'fastify'
+import { JwtSignFunction } from '../types/jwt-types'
 
 export class AuthService {
-  async login(id: string, app: FastifyInstance) {
+  async login(id: string, signJwt: JwtSignFunction) {
     const user = await prisma.user.findUnique({
       where: { id },
     })
@@ -12,7 +12,7 @@ export class AuthService {
       throw new Error('Usuario não encontrado')
     }
 
-    const token = generateToken(app.jwt.sign, user)
+    const token = generateToken(signJwt, user)
 
     return { token }
   }

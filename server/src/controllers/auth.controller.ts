@@ -5,19 +5,23 @@ import { z } from 'zod'
 const authService = new AuthService()
 
 export class AuthController {
-  async login(request: FastifyRequest, reply: FastifyReply) {
+  static async login(request: FastifyRequest, reply: FastifyReply) {
 
     const loginSchema = z.object({
         id: z.string().uuid(),
     })
 
-
     const { id } = loginSchema.parse(request.body)
-
-
+    
     try {
-        // const result = await authService.login(id, )
+        const signJwt = request.server.jwt.sign
+        const result = await authService.login(id, signJwt)
+        console.log('Login successful:', result)
+      return reply.send(result)
         
-    } catch (error) {}
+    } catch (error) {
+      console.error('Login error:', error)
+      return reply.status(500).send({ error: 'Internal Server Error' })
+    }
   }
 }
