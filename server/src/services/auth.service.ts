@@ -4,7 +4,7 @@ import { FastifyInstance } from 'fastify'
 
 export class AuthService {
   async login(id: string, app: FastifyInstance) {
-    const user = await prisma.user.findUniqueOrThrow({
+    const user = await prisma.user.findUnique({
       where: { id },
     })
 
