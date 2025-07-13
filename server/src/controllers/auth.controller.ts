@@ -15,12 +15,13 @@ export class AuthController {
     
     try {
         const signJwt = request.server.jwt.sign
+        console.log("to aqui")
         const result = await authService.login(id, signJwt)
         console.log('Login successful:', result)
       return reply.send(result)
         
     } catch (error) {
-      console.error('Login error:', error)
+      console.log('Login error:', error)
       return reply.status(500).send({ error: 'Internal Server Error' })
     }
   }
