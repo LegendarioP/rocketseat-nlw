@@ -2,7 +2,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { UserService } from "../services/user.service";
 import { z } from "zod";
-import { UserAlreadyExistsError, UserNotFound } from "../errors/user-error";
+import { UserAlreadyExistsError, UserNotFoundError } from "../errors/user-error";
 import { generateToken } from "../utils/jwt";
 
 const userService = new UserService();
@@ -43,7 +43,7 @@ export class UserController {
             const user = await userService.findById(id);
             return reply.status(200).send(user);
         } catch (error) {
-            if(error instanceof UserNotFound) {
+            if(error instanceof UserNotFoundError) {
                 return reply.status(404).send({ error: error.message });
             }
             if (error instanceof z.ZodError) {
@@ -73,7 +73,7 @@ export class UserController {
             const user = await userService.me(request.user.sub);
             return reply.status(200).send(user);
         } catch (error) {
-            if(error instanceof UserNotFound) {
+            if(error instanceof UserNotFoundError) {
                 return reply.status(404).send({ error: error.message });
             }
             return reply.status(500).send({ error: 'Internal Server Error' });
