@@ -11,3 +11,9 @@ export class UserNotFoundError extends Error {
         this.name = "UserNotFound";
     }
 }
+export class UserDeleteError extends Error {
+  constructor(message = "Erro ao remover usuário") {
+    super(message);
+    this.name = "UserDeleteError";
+  }
+}
