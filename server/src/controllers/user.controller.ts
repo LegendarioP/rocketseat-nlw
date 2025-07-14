@@ -64,6 +64,42 @@ export class UserController {
             return reply.status(500).send({ error: 'Internal Server Error' });
         }
     }
+    static async update(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid()
+        })
+        const bodySchema = z.object({
+            name: z.string().optional(),
+            email: z.string().email().optional(),
+            password: z.string().optional(),
+            color: z.string().optional(),
+            avatarUrl: z.string().optional(),
+        })
+        try {
+            if (!request.user) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const { id } = paramsSchema.parse(request.params);
+            if (id !== request.user.sub) {
+                return reply.status(403).send({ error: 'Forbidden' });
+            }
+            const data = bodySchema.parse(request.body);
+            if(!data) { 
+                return reply.status(400).send({ error: 'No data provided for update' });
+            }
+            const userUpdated = await userService.update(id, data);
+            return reply.status(200).send(userUpdated);
+            
+        } catch (error) {
+            if(error instanceof UserAlreadyExistsError){
+                return reply.status(409).send({ error: error.message })
+            }
+            if (error instanceof UserNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: error});
+        }
+    }
 
     static async me(request: FastifyRequest, reply: FastifyReply) {
         try {
