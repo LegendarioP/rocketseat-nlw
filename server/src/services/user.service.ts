@@ -36,6 +36,20 @@ export class UserService {
         return userWithoutPassword;
     }
 
+    async list(){
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                color: true,
+                avatarUrl: true
+            }
+        });
+
+        return users;
+    }
+
     async me(userId: string) {
         const user = await prisma.user.findUnique({
             where: { id: userId }  

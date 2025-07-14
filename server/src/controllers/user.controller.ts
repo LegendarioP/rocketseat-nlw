@@ -56,6 +56,15 @@ export class UserController {
         }
     }
 
+    static async list(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            const users = await userService.list();
+            return reply.status(200).send(users);
+        } catch (error) {
+            return reply.status(500).send({ error: 'Internal Server Error' });
+        }
+    }
+
     static async me(request: FastifyRequest, reply: FastifyReply) {
         try {
             if(!request.user) {
