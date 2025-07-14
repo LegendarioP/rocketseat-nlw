@@ -4,7 +4,7 @@ export interface JwtSignFunction {
 
 
 export interface JwtPayload {
-  name: string
-  avatarUrl: string
-  id: string
+  name: string;
+  avatarUrl: string | null;
+  id: string;
 }
