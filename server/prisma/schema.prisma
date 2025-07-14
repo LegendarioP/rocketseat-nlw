@@ -9,10 +9,14 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  githubId  Int      @unique
+  githubId  Int?     @unique
   name      String
-  login     String
-  avatarUrl String
+  email     String   @unique
+  password  String
+  avatarUrl String?
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   Memories  Memory[]
 }
 
