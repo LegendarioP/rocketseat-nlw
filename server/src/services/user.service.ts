@@ -1,6 +1,6 @@
 
 import { CreateUserDTO } from "../dtos/user.dto";
-import { UserAlreadyExistsError } from "../errors/user-error";
+import { UserAlreadyExistsError, UserNotFound } from "../errors/user-error";
 import { prisma } from "../utils/prisma";
 import { generateRandomHexColor } from '../utils/color';
 
@@ -21,5 +21,18 @@ export class UserService {
                 color: generateRandomHexColor()
             }
         })
+    }
+
+    async me(userId: string) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId }  
+        })
+
+        if (!user) {
+            throw new UserNotFound();
+        }
+
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
     }
 }

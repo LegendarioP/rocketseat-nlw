@@ -2,7 +2,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { UserService } from "../services/user.service";
 import { z } from "zod";
-import { UserAlreadyExistsError } from "../errors/user-error";
+import { UserAlreadyExistsError, UserNotFound } from "../errors/user-error";
 import { generateToken } from "../utils/jwt";
 
 const userService = new UserService();
@@ -30,6 +30,22 @@ export class UserController {
                 return reply.status(400).send({ error: error.message })
             }
             return reply.status(400).send({ error: 'Unknown error' })
+        }
+    }
+
+
+    static async me(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            if(!request.user) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const user = await userService.me(request.user.sub);
+            return reply.status(200).send(user);
+        } catch (error) {
+            if(error instanceof UserNotFound) {
+                return reply.status(404).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: 'Internal Server Error' });
         }
     }
 }
