@@ -2,7 +2,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { UserService } from "../services/user.service";
 import { z } from "zod";
-import { UserAlreadyExistsError, UserNotFoundError } from "../errors/user-error";
+import { UserAlreadyExistsError, UserDeleteError, UserNotFoundError } from "../errors/user-error";
 import { generateToken } from "../utils/jwt";
 
 const userService = new UserService();
@@ -99,6 +99,32 @@ export class UserController {
             }
             return reply.status(500).send({ error: error});
         }
+    }
+
+    static async delete(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid()
+        })
+        try {
+            if (!request.user) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const { id } = paramsSchema.parse(request.params);
+            if (id !== request.user.sub) {
+                return reply.status(403).send({ error: 'Forbidden' });
+            }
+            const response = await userService.delete(id);
+            return reply.status(204).send({response});
+        } catch (error) {
+            if (error instanceof UserDeleteError) {
+                return reply.status(400).send({ error: error.message });
+            }
+            if (error instanceof UserNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: 'Internal Server Error' });
+        }
+
     }
 
     static async me(request: FastifyRequest, reply: FastifyReply) {

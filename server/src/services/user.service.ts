@@ -1,6 +1,6 @@
 
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/user.dto";
-import { UserAlreadyExistsError, UserNotFoundError } from "../errors/user-error";
+import { UserAlreadyExistsError, UserDeleteError, UserNotFoundError } from "../errors/user-error";
 import { prisma } from "../utils/prisma";
 import { generateRandomHexColor } from '../utils/color';
 
@@ -60,7 +60,28 @@ export class UserService {
 
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword
-    }                    
+    }
+
+    async delete(id: string) {
+        const user = await prisma.user.findUnique({
+            where: { id }
+        });
+
+        if (!user) {
+            throw new UserNotFoundError();
+        }
+
+        const removeUser = await prisma.user.delete({
+            where: { id }
+        });
+
+        if (!removeUser) {
+            throw new UserDeleteError();
+        }
+
+        return { message: 'User deleted successfully' };
+
+    }
 
     async list(){
         const users = await prisma.user.findMany({
