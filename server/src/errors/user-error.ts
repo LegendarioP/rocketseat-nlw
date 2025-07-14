@@ -5,7 +5,7 @@ export class UserAlreadyExistsError extends Error {
     }
 }
 
-export class UserNotFound extends Error { 
+export class UserNotFoundError extends Error { 
     constructor(message = "Usuário não encontrado") {
         super(message);
         this.name = "UserNotFound";

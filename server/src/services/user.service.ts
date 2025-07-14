@@ -1,6 +1,6 @@
 
 import { CreateUserDTO } from "../dtos/user.dto";
-import { UserAlreadyExistsError, UserNotFound } from "../errors/user-error";
+import { UserAlreadyExistsError, UserNotFoundError } from "../errors/user-error";
 import { prisma } from "../utils/prisma";
 import { generateRandomHexColor } from '../utils/color';
 
@@ -29,7 +29,7 @@ export class UserService {
         });
 
         if (!user) {
-            throw new UserNotFound();
+            throw new UserNotFoundError();
         }
 
         const { password, ...userWithoutPassword } = user;
@@ -56,7 +56,7 @@ export class UserService {
         })
 
         if (!user) {
-            throw new UserNotFound();
+            throw new UserNotFoundError();
         }
 
         const { password, ...userWithoutPassword } = user;
