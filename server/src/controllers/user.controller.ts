@@ -33,6 +33,28 @@ export class UserController {
         }
     }
 
+    static async show(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid()
+        })
+        
+        try {
+            const { id } = paramsSchema.parse(request.params);
+            const user = await userService.findById(id);
+            return reply.status(200).send(user);
+        } catch (error) {
+            if(error instanceof UserNotFound) {
+                return reply.status(404).send({ error: error.message });
+            }
+            if (error instanceof z.ZodError) {
+                return reply.status(400).send({ error: 'Invalid user Id', details: error.errors });
+            }
+            if (error instanceof Error) {
+                return reply.status(500).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: 'Unknown error' });
+        }
+    }
 
     static async me(request: FastifyRequest, reply: FastifyReply) {
         try {

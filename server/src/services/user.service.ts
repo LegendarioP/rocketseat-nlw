@@ -23,6 +23,19 @@ export class UserService {
         })
     }
 
+    async findById(id: string) {
+        const user = await prisma.user.findUnique({
+            where: { id }
+        });
+
+        if (!user) {
+            throw new UserNotFound();
+        }
+
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+    }
+
     async me(userId: string) {
         const user = await prisma.user.findUnique({
             where: { id: userId }  
