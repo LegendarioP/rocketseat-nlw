@@ -8,4 +8,5 @@ export async function userRoutes(app: FastifyInstance) {
     app.get('/me', { preHandler: [authMiddleware]}, UserController.me)
     app.get('/:id', UserController.show)
     app.get('/', UserController.list)
+    app.put('/:id', { preHandler: [authMiddleware] }, UserController.update)
 }
