@@ -1,8 +1,8 @@
 
 import { CreateUserDTO } from "../dtos/user.dto";
 import { UserAlreadyExistsError } from "../errors/user-error";
-import { generateToken } from "../utils/jwt";
 import { prisma } from "../utils/prisma";
+import { generateRandomHexColor } from '../utils/color';
 
 
 
@@ -15,12 +15,11 @@ export class UserService {
         if (existingUser) {
             throw new UserAlreadyExistsError();
         }
-        // return 
         return await prisma.user.create({
-            data
+            data: {
+                ...data,
+                color: generateRandomHexColor()
+            }
         })
-
-        // prosseguir com a criação do usuário normalmente
-        // return await prisma.user.create({ data });
     }
 }
