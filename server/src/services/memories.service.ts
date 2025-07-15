@@ -3,7 +3,7 @@ import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error"
 import { prisma } from "../utils/prisma";
 
 export class MemoriesServices {
-    async createMemory(userId:string, data: CreateMemoryDTO) {
+    async create(userId:string, data: CreateMemoryDTO) {
 
         const memory = await prisma.memory.create({
             data: {
@@ -17,7 +17,7 @@ export class MemoriesServices {
         return memory;
     }
 
-    async getAllMemories(userId: string) {
+    async getAll(userId: string) {
         const memories = await prisma.memory.findMany({
             where: {
                 userId
@@ -34,7 +34,7 @@ export class MemoriesServices {
         return memories;
     }
 
-    async getMemoryById(id: string) {
+    async getById(id: string) {
         const memory = await prisma.memory.findUnique({
             where: {
                 id
@@ -46,7 +46,7 @@ export class MemoriesServices {
         return memory;
     }
 
-    async updateMemory(memoryId: string, data: UpdateMemoryDTO) {
+    async update(memoryId: string, data: UpdateMemoryDTO) {
         const memory = await prisma.memory.update({
             where: {
                 id: memoryId
@@ -60,7 +60,7 @@ export class MemoriesServices {
         }
         return memory;
     }
-    async deleteMemory(memoryId: string) {
+    async delete(memoryId: string) {
         const memory = await prisma.memory.delete({
             where: {
                 id: memoryId

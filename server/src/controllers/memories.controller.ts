@@ -18,7 +18,7 @@ export class MemoriesController {
             }
             const id = request.user.sub;
             const data = bodySchema.parse(request.body);
-            const memory = await memoriesService.createMemory(id, data)
+            const memory = await memoriesService.create(id, data)
 
             return reply.status(201).send(memory);
         } catch (error) {
@@ -37,7 +37,7 @@ export class MemoriesController {
                 return reply.status(401).send({ error: 'Unauthorized' });
             }
             const id = request.user.sub;
-            const memories = await memoriesService.getAllMemories(id);
+            const memories = await memoriesService.getAll(id);
             return reply.status(200).send(memories);
         } catch (error) {
             if (error instanceof MemoryNotFoundError) {
@@ -55,7 +55,7 @@ export class MemoriesController {
             if (!request.user || !request.user.sub) {
                 return reply.status(401).send({ error: 'Unauthorized' });
             }
-            const memory = await memoriesService.getMemoryById(id)
+            const memory = await memoriesService.getById(id)
             return reply.status(200).send(memory);
 
         } catch (error) {
@@ -85,7 +85,7 @@ export class MemoriesController {
                 return reply.status(401).send({ error: 'Unauthorized' });
             }
 
-            const updatedMemory = await memoriesService.updateMemory(id, data);
+            const updatedMemory = await memoriesService.update(id, data);
             return reply.status(200).send(updatedMemory);
             
         } catch (error) {
@@ -109,7 +109,7 @@ export class MemoriesController {
             if (!request.user || !request.user.sub) {
                 return reply.status(401).send({ error: 'Unauthorized' });
             }
-            const response = await memoriesService.deleteMemory(id);
+            const response = await memoriesService.delete(id);
             return reply.status(204).send(response);
         } catch (error) {
             if (error instanceof MemoryNotFoundError) {
