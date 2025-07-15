@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 import { MemoriesServices } from "../services/memories.service";
-import { CreateMemoryError } from "../errors/memorie-error";
+import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error";
 
 const memoriesService = new MemoriesServices();
 
@@ -29,6 +29,21 @@ export class MemoriesController {
                 return reply.status(400).send({ error: 'Invalid data', details: error.errors });
             }
             return reply.status(500).send({ error: 'An error occurred while creating the memory' });
+        }
+    }
+    static async getAll(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            if (!request.user || !request.user.sub) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const id = request.user.sub;
+            const memories = await memoriesService.getAllMemories(id);
+            return reply.status(200).send(memories);
+        } catch (error) {
+            if (error instanceof MemoryNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: 'An error occurred while fetching memories' });
         }
     }
 }

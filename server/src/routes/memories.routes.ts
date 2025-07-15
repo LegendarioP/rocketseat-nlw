@@ -5,4 +5,6 @@ import { authMiddleware } from '../middlewares/auth.middlewares'
 import { MemoriesController } from '../controllers/memories.controller'
 
 export async function memoriesRoutes(app: FastifyInstance) {
-  app.post('/create', { preHandler: [authMiddleware] }, MemoriesController.create )}
+  app.post('/create', { preHandler: [authMiddleware] }, MemoriesController.create )
+  app.get('/', { preHandler: [authMiddleware] }, MemoriesController.getAll )
+}
