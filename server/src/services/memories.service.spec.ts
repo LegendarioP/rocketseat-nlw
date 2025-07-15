@@ -28,7 +28,7 @@ describe("MemoriesServices", () => {
     })
 
     describe("create", () => {
-        it("deve criar uma memória com sucesso", async () => {
+        it("Deve criar uma memória com sucesso", async () => {
             const mockMemoryData = {
                 content: "Test memory",
                 coverUrl: "http://example.com/img.png",
@@ -56,7 +56,7 @@ describe("MemoriesServices", () => {
             expect(result).toHaveProperty("id")
         })
 
-        it("deve lançar CreateMemoryError quando a criação falhar", async () => {
+        it("Deve lançar CreateMemoryError quando a criação falhar", async () => {
             const mockMemoryData = {
                 content: "Test memory",
                 coverUrl: "http://example.com/img.png",
@@ -238,12 +238,18 @@ describe("MemoriesServices", () => {
 
             (mockPrisma.memory.findUnique as jest.MockedFunction<any>).mockResolvedValue(mockMemory)
 
-            const result = await service.getById(mockMemory.id)
+            const result = await service.getPublicMemoryById(mockMemory.id)
 
             expect(mockPrisma.memory.findUnique).toHaveBeenCalledWith({
-                where: { id: mockMemory.id }
+                where: { id: mockMemory.id, isPublic: true }
             })
+            expect(result.isPublic).toBe(true)
             expect(result).toEqual(mockMemory)
+        })
+
+        it("Deve lançar MemoryNotFoundError ao tentar obter memória pública inexistente", async () => {
+            (mockPrisma.memory.findUnique as jest.MockedFunction<any>).mockResolvedValue(null)
+            await expect(service.getPublicMemoryById("non-existent-id")).rejects.toThrow(MemoryNotFoundError)
         })
 
 
