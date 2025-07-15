@@ -109,6 +109,14 @@ describe("MemoriesServices", () => {
 
     })
 
+    it("Deve lançar o MemoryNotFoundError quando não encontrar memórias", async () => {
+        (mockPrisma.memory.findMany as jest.MockedFunction<any>).mockResolvedValue([])
+
+        await expect(service.getAll(testUserId)).rejects.toThrow(MemoryNotFoundError)
+    })
+
+
+    
   })
 
 })

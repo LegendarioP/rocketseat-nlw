@@ -27,7 +27,7 @@ export class MemoriesServices {
             }
         });
 
-        if (!memories) {
+        if (!memories || memories.length === 0) {
             throw new MemoryNotFoundError("Memórias não encontradas");
         }
 
