@@ -115,6 +115,28 @@ describe("MemoriesServices", () => {
         await expect(service.getAll(testUserId)).rejects.toThrow(MemoryNotFoundError)
     })
 
+    it("Deve retornar os dados da memoria por id" , async () => {
+        const mockMemory = {
+            id: "memory-id-123",
+            content: "Test memory",
+            coverUrl: "http://example.com/img.png",
+            isPublic: true,
+            userId: testUserId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        (mockPrisma.memory.findUnique as jest.MockedFunction<any>).mockResolvedValue(mockMemory)
+
+        const result = await service.getById(mockMemory.id)
+
+        expect(mockPrisma.memory.findUnique).toHaveBeenCalledWith({
+            where: { id: mockMemory.id }
+        })
+        expect(result).toEqual(mockMemory)
+
+    })
+
 
     
   })
