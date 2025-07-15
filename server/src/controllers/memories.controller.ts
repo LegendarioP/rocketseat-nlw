@@ -3,7 +3,7 @@ import z from "zod";
 import { MemoriesServices } from "../services/memories.service";
 import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error";
 
-const memoriesService = new MemoriesServices();
+export const memoriesService = new MemoriesServices();
 
 export class MemoriesController {
     static async create(request: FastifyRequest, reply: FastifyReply) {

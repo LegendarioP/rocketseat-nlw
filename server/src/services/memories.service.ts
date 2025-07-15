@@ -27,7 +27,7 @@ export class MemoriesServices {
             }
         });
 
-        if (!memories) {
+        if (!memories || memories.length === 0) {
             throw new MemoryNotFoundError("Memórias não encontradas");
         }
 
@@ -60,6 +60,7 @@ export class MemoriesServices {
         }
         return memory;
     }
+
     async delete(memoryId: string) {
         const memory = await prisma.memory.delete({
             where: {
@@ -82,12 +83,13 @@ export class MemoriesServices {
             }
         });
 
-        if (!memories) {
+        if (!memories || memories.length === 0) {
             throw new MemoryNotFoundError("Public memories not found");
         }
 
         return memories;
     }
+
     async getPublicMemoryById(id: string) {
         const memory = await prisma.memory.findUnique({
             where: {
