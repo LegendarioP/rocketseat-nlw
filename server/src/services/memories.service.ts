@@ -1,4 +1,4 @@
-import { CreateMemoryDTO } from "../dtos/memorie.dto";
+import { CreateMemoryDTO, UpdateMemoryDTO } from "../dtos/memorie.dto";
 import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error";
 import { prisma } from "../utils/prisma";
 
@@ -38,6 +38,21 @@ export class MemoriesServices {
         const memory = await prisma.memory.findUnique({
             where: {
                 id
+            }
+        });
+        if (!memory) {
+            throw new MemoryNotFoundError();
+        }
+        return memory;
+    }
+
+    async updateMemory(memoryId: string, data: UpdateMemoryDTO) {
+        const memory = await prisma.memory.update({
+            where: {
+                id: memoryId
+            },
+            data: {
+                ...data
             }
         });
         if (!memory) {

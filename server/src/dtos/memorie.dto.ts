@@ -3,3 +3,10 @@ export interface CreateMemoryDTO {
   content:   string,
   isPublic:  boolean
 }
+
+
+export interface UpdateMemoryDTO {
+  coverUrl?:  string,
+  content?:   string,
+  isPublic?:  boolean
+}

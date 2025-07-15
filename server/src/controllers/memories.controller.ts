@@ -68,4 +68,36 @@ export class MemoriesController {
             return reply.status(500).send({ error: 'An error occurred while fetching the memory' });
         }
     }
+    static async updateMemory(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid()
+        });
+        const bodySchema = z.object({
+            content: z.string().optional(),
+            coverUrl: z.string().optional(),
+            isPublic: z.coerce.boolean().optional(),
+        });
+        try {
+            const { id } = paramsSchema.parse(request.params);
+            const data = bodySchema.parse(request.body);
+
+            if (!request.user || !request.user.sub) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+
+            const updatedMemory = await memoriesService.updateMemory(id, data);
+            return reply.status(200).send(updatedMemory);
+            
+        } catch (error) {
+            if(error instanceof MemoryNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            if (error instanceof z.ZodError) {
+                return reply.status(400).send({ error: 'Invalid data', details: error.errors });
+            }
+            if (error instanceof Error) {
+                return reply.status(500).send({ error: error.message });
+            }
+        }
+    }
 }
