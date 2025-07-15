@@ -202,6 +202,24 @@ describe("MemoriesServices", () => {
             await expect(service.delete("non-existent-id")).rejects.toThrow(MemoryNotFoundError)
         });
 
+        it("Deve retornar apenas memórias públicas", async () => {
+            const mockMemories = [
+                { id: "1", isPublic: true, userId: "user1", content: "A", coverUrl: "url", createdAt: new Date() },
+                { id: "2", isPublic: true, userId: "user2", content: "B", coverUrl: "url", createdAt: new Date() }
+            ];
+            (mockPrisma.memory.findMany as jest.MockedFunction<any>).mockResolvedValue(mockMemories);
+
+            const result = await service.getPublicMemories();
+
+            expect(mockPrisma.memory.findMany).toHaveBeenCalledWith({
+                where: { isPublic: true },
+                orderBy: { createdAt: 'desc' }
+            });
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.every(mem => mem.isPublic)).toBe(true);
+            expect(result).toEqual(mockMemories);
+        });
+
     })
 
 })
