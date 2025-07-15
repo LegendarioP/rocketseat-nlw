@@ -28,7 +28,7 @@ app.register(jwt, {
 
 app.register(authRoutes)
 app.register(userRoutes, { prefix: '/users' })
-app.register(memoriesRoutes)
+app.register(memoriesRoutes, { prefix: '/memories' })
 app.register(uploadRoutes)
 
 app
