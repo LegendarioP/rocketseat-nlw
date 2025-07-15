@@ -88,5 +88,18 @@ export class MemoriesServices {
 
         return memories;
     }
+    async getPublicMemoryById(id: string) {
+        const memory = await prisma.memory.findUnique({
+            where: {
+                id,
+                isPublic: true
+            }
+        });
 
+        if (!memory) {
+            throw new MemoryNotFoundError("Memoria Publica não encontrada");
+        }
+
+        return memory;
+    }
 }
