@@ -72,4 +72,21 @@ export class MemoriesServices {
         return { message: 'Memory deleted successfully' };
     }
 
+    async getPublicMemories(){
+        const memories = await prisma.memory.findMany({
+            where: {
+                isPublic: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        if (!memories) {
+            throw new MemoryNotFoundError("Public memories not found");
+        }
+
+        return memories;
+    }
+
 }

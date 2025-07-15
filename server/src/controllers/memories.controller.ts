@@ -121,4 +121,16 @@ export class MemoriesController {
             return reply.status(500).send({ error: 'An error occurred while deleting the memory' });
         }
     }
+
+    static async getPublicMemories(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            const memories = await memoriesService.getPublicMemories();
+            return reply.status(200).send(memories);
+        } catch (error) {
+            if (error instanceof MemoryNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: 'An error occurred while fetching public memories' });
+        }
+    }
 }
