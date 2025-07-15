@@ -137,6 +137,12 @@ describe("MemoriesServices", () => {
 
     })
 
+    it("Deve lançar MemoryNotFoundError quando não encontrar memória por id", async () => {
+        (mockPrisma.memory.findUnique as jest.MockedFunction<any>).mockResolvedValue(null)
+
+        await expect(service.getById("non-existent-id")).rejects.toThrow(MemoryNotFoundError)
+    })
+
 
     
   })
