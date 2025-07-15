@@ -7,6 +7,7 @@ import { memoriesRoutes } from './routes/memories.routes'
 import { authRoutes } from './routes/auth.routes'
 import { uploadRoutes } from './routes/upload'
 import { resolve } from 'node:path'
+import { userRoutes } from './routes/user.routes'
 
 const app = fastify()
 
@@ -26,6 +27,7 @@ app.register(jwt, {
 })
 
 app.register(authRoutes)
+app.register(userRoutes, { prefix: '/users' })
 app.register(memoriesRoutes)
 app.register(uploadRoutes)
 
