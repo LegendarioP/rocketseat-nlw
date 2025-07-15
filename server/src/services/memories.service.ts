@@ -60,4 +60,16 @@ export class MemoriesServices {
         }
         return memory;
     }
+    async deleteMemory(memoryId: string) {
+        const memory = await prisma.memory.delete({
+            where: {
+                id: memoryId
+            }
+        });
+        if (!memory) {
+            throw new MemoryNotFoundError();
+        }
+        return { message: 'Memory deleted successfully' };
+    }
+
 }

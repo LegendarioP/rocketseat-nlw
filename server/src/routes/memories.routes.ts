@@ -9,4 +9,6 @@ export async function memoriesRoutes(app: FastifyInstance) {
   app.get('/', { preHandler: [authMiddleware] }, MemoriesController.getAll )
   app.get('/:id', { preHandler: [authMiddleware] }, MemoriesController.getById )
   app.put('/:id', { preHandler: [authMiddleware] }, MemoriesController.updateMemory )
+  app.delete('/:id', { preHandler: [authMiddleware] }, MemoriesController.deleteMemory )
+
 }

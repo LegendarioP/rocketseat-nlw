@@ -100,4 +100,25 @@ export class MemoriesController {
             }
         }
     }
+    static async deleteMemory(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid()
+        });
+        try {
+            const { id } = paramsSchema.parse(request.params);
+            if (!request.user || !request.user.sub) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const response = await memoriesService.deleteMemory(id);
+            return reply.status(204).send(response);
+        } catch (error) {
+            if (error instanceof MemoryNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            if (error instanceof z.ZodError) {
+                return reply.status(400).send({ error: 'Invalid parameters', details: error.errors });
+            }
+            return reply.status(500).send({ error: 'An error occurred while deleting the memory' });
+        }
+    }
 }
