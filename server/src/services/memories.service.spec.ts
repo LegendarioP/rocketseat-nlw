@@ -197,6 +197,11 @@ describe("MemoriesServices", () => {
             expect(result).toEqual({ message: 'Memory deleted successfully' })
         })
 
+        it("Deve lançar MemoryNotFoundError ao tentar deletar memória inexistente", async () => {
+            (mockPrisma.memory.delete as jest.MockedFunction<any>).mockResolvedValue(null)
+            await expect(service.delete("non-existent-id")).rejects.toThrow(MemoryNotFoundError)
+        });
+
     })
 
 })
