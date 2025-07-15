@@ -169,6 +169,11 @@ describe("MemoriesServices", () => {
             });
             expect(result).toEqual(mockUpdatedMemory);
         })
+        
+        it("Deve lançar MemoryNotFoundError ao tentar atualizar memória inexistente", async () => {
+            (mockPrisma.memory.update as jest.MockedFunction<any>).mockResolvedValue(null)
+            await expect(service.update("non-existent-id", {})).rejects.toThrow(MemoryNotFoundError)
+        });
 
 
     })
