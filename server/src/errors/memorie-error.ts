@@ -4,3 +4,10 @@ export class CreateMemoryError extends Error {
         this.name = "CreateMemoryError";
     }
 }
+
+export class MemoryNotFoundError extends Error {
+    constructor(message = "Memória não encontrada") {
+        super(message);
+        this.name = "MemoryNotFoundError";
+    }
+}
