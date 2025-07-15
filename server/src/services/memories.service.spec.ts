@@ -2,7 +2,6 @@ import { MemoriesServices } from "./memories.service"
 import { prisma } from "../utils/prisma"
 import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error"
 
-// Mock do Prisma
 jest.mock("../utils/prisma", () => ({
     prisma: {
         memory: {
@@ -15,7 +14,6 @@ jest.mock("../utils/prisma", () => ({
     },
 }))
 
-// Tipagem correta do mock
 const mockPrisma = prisma as jest.Mocked<typeof prisma>
 
 describe("MemoriesServices", () => {
