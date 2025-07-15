@@ -20,7 +20,7 @@ export class MemoriesServices {
     async getAllMemories(userId: string) {
         const memories = await prisma.memory.findMany({
             where: {
-                userId: userId
+                userId
             },
             orderBy: {
                 createdAt: 'desc'
@@ -32,5 +32,17 @@ export class MemoriesServices {
         }
 
         return memories;
+    }
+
+    async getMemoryById(id: string) {
+        const memory = await prisma.memory.findUnique({
+            where: {
+                id
+            }
+        });
+        if (!memory) {
+            throw new MemoryNotFoundError();
+        }
+        return memory;
     }
 }

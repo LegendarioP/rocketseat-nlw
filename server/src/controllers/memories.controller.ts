@@ -46,4 +46,26 @@ export class MemoriesController {
             return reply.status(500).send({ error: 'An error occurred while fetching memories' });
         }
     }
+    static async getById(request: FastifyRequest, reply: FastifyReply) {
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        });
+        try {
+            const { id } = paramsSchema.parse(request.params);
+            if (!request.user || !request.user.sub) {
+                return reply.status(401).send({ error: 'Unauthorized' });
+            }
+            const memory = await memoriesService.getMemoryById(id)
+            return reply.status(200).send(memory);
+
+        } catch (error) {
+            if (error instanceof MemoryNotFoundError) {
+                return reply.status(404).send({ error: error.message });
+            }
+            if (error instanceof z.ZodError) {
+                return reply.status(400).send({ error: 'Invalid parameters', details: error.errors });
+            }
+            return reply.status(500).send({ error: 'An error occurred while fetching the memory' });
+        }
+    }
 }
