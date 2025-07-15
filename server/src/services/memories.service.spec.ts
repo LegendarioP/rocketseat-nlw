@@ -220,6 +220,11 @@ describe("MemoriesServices", () => {
             expect(result).toEqual(mockMemories);
         });
 
+        it("Deve lançar MemoryNotFoundError quando não houver memórias públicas", async () => {
+            (mockPrisma.memory.findMany as jest.MockedFunction<any>).mockResolvedValue([]);
+            await expect(service.getPublicMemories()).rejects.toThrow(MemoryNotFoundError);
+        });
+
     })
 
 })
