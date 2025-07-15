@@ -60,6 +60,7 @@ export class MemoriesServices {
         }
         return memory;
     }
+
     async delete(memoryId: string) {
         const memory = await prisma.memory.delete({
             where: {
@@ -88,6 +89,7 @@ export class MemoriesServices {
 
         return memories;
     }
+    
     async getPublicMemoryById(id: string) {
         const memory = await prisma.memory.findUnique({
             where: {
