@@ -90,7 +90,7 @@ describe("MemoriesController", () => {
             }
 
             await MemoriesController.create(mockRequest as any, mockReply as any)
-            
+
             expect(mockReply.status).toHaveBeenCalledWith(400)
             expect(mockReply.send).toHaveBeenCalledWith({
                 error: 'Invalid data',
@@ -98,6 +98,43 @@ describe("MemoriesController", () => {
             })
         })
     })
+
+    describe("Get All Memories Route", () => {
+        it("Deve retornar todas as memórias do usuário autenticado", async () => {
+            const mockMemories = [
+                {
+                    id: "memory-1",
+                    content: "Primeira memória",
+                    coverUrl: "http://example.com/img1.png",
+                    isPublic: false,
+                    userId: "test-user-id",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    id: "memory-2", 
+                    content: "Segunda memória",
+                    coverUrl: "http://example.com/img2.png",
+                    isPublic: true,
+                    userId: "test-user-id",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }
+            ];
+
+            (memoriesService.getAll as jest.Mock).mockResolvedValue(mockMemories)
+
+            await MemoriesController.getAll(mockRequest as any, mockReply as any)
+
+            expect(memoriesService.getAll).toHaveBeenCalledWith("test-user-id")
+            expect(mockReply.status).toHaveBeenCalledWith(200)
+            expect(mockReply.send).toHaveBeenCalledWith(mockMemories)
+        })
+
+
+
+    })
+
 })
 
 
