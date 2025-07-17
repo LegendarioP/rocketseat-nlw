@@ -97,6 +97,21 @@ describe("MemoriesController", () => {
                 details: expect.any(Array)
             })
         })
+
+        it("Deve retornar erro 500 quando houver algum problema ao criar as memorias", async () => {
+            mockRequest.body = {
+                content: "Test memory",
+                coverUrl: "http://example.com/img.png",
+                isPublic: true,
+            };
+
+            (memoriesService.create as jest.Mock).mockRejectedValue(new Error())
+
+            await MemoriesController.create(mockRequest as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(500)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "An error occurred while creating the memory" })
+        })
     })
 
     describe("Get All Memories Route", () => {
