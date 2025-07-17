@@ -1,5 +1,5 @@
 import { MemoriesController, memoriesService } from "./memories.controller"
-import { CreateMemoryError } from "../errors/memorie-error"
+import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error"
 
 // Mock do service
 jest.mock("../services/memories.service", () => ({
@@ -138,6 +138,16 @@ describe("MemoriesController", () => {
 
             expect(mockReply.status).toHaveBeenCalledWith(401)
             expect(mockReply.send).toHaveBeenCalledWith({ error: 'Unauthorized' })
+        })
+
+        it("Deve retornar erro 404 quando memória não é encontrada", async () => {
+
+            (memoriesService.getAll as jest.Mock).mockRejectedValue(new MemoryNotFoundError("Nenhuma memória encontrada"))
+
+            await MemoriesController.getAll(mockRequest as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(404)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "Nenhuma memória encontrada" })
         })
 
     })
