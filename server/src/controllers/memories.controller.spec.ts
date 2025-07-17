@@ -150,6 +150,17 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith({ error: "Nenhuma memória encontrada" })
         })
 
+        
+        it("Deve retornar erro 500 quando houver algum problema ao buscar as memorias", async () => {
+
+            (memoriesService.getAll as jest.Mock).mockRejectedValue(new Error())
+
+            await MemoriesController.getAll(mockRequest as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(500)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "An error occurred while fetching memories" })
+        })
+
     })
 
 })
