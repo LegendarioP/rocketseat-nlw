@@ -219,6 +219,24 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith({ error: 'Unauthorized' })
         })
 
+    
+        it("Deve retornar erro 400 quando ID não é um UUID válido", async () => {
+            const mockRequestWithInvalidId = {
+                user: { sub: "test-user-id" },
+                params: { id: "invalid-id" }, // ID inválido
+                body: {},
+            };
+
+            await MemoriesController.getById(mockRequestWithInvalidId as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(400)
+            expect(mockReply.send).toHaveBeenCalledWith({
+                error: 'Invalid parameters',
+                details: expect.any(Array)
+            })
+        })
+
+
     })
 
 })
