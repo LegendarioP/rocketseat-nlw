@@ -251,7 +251,40 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith({ error: "Memory not found" })
         })
 
+    })
 
+    describe("Update Memory Route", () => {
+        
+        it("Deve poder atualizar uma memoria existente", async () => {
+            const mockMemoryId = "550e8400-e29b-41d4-a716-446655440000";
+            const mockMemoryData = {
+                content: "Updated memory",
+                coverUrl: "http://example.com/img-updated.png",
+                isPublic: false,
+            }
+
+            const mockUpdatedMemory = {
+                id: mockMemoryId,
+                ...mockMemoryData,
+                userId: "test-user-id",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
+
+            const mockRequestWithParamsAndBody = {
+                user: { sub: "test-user-id" },
+                params: { id: mockMemoryId },
+                body: mockMemoryData,
+            };
+
+            (memoriesService.update as jest.Mock).mockResolvedValue(mockUpdatedMemory)
+
+            await MemoriesController.updateMemory(mockRequestWithParamsAndBody as any, mockReply as any)
+
+            expect(memoriesService.update).toHaveBeenCalledWith(mockMemoryId, mockMemoryData)
+            expect(mockReply.status).toHaveBeenCalledWith(200)
+            expect(mockReply.send).toHaveBeenCalledWith(mockUpdatedMemory)
+        })
     })
 
 })
