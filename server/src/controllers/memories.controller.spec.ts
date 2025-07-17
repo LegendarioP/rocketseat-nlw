@@ -131,7 +131,14 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith(mockMemories)
         })
 
+        it("Deve retornar erro 401 quando usuário não está autenticado", async () => {
+            const mockRequestWithoutUser = { user: null, body: {} }
 
+            await MemoriesController.getAll(mockRequestWithoutUser as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(401)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: 'Unauthorized' })
+        })
 
     })
 
