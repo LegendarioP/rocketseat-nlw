@@ -163,6 +163,34 @@ describe("MemoriesController", () => {
 
     })
 
+    describe("Get Memory By ID Route", () => {
+        it("Deve retornar uma memória específica pelo ID", async () => {
+            const mockMemory = {
+                id: "550e8400-e29b-41d4-a716-446655440000", // UUID válido
+                content: "Memória de teste",
+                coverUrl: "http://example.com/img.png",
+                isPublic: true,
+                userId: "test-user-id",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+
+            const mockRequestWithParams = {
+                user: { sub: "test-user-id" },
+                params: { id: mockMemory.id },
+                body: {},
+            };
+
+            (memoriesService.getById as jest.Mock).mockResolvedValue(mockMemory)
+
+            await MemoriesController.getById(mockRequestWithParams as any, mockReply as any)
+            
+            expect(memoriesService.getById).toHaveBeenCalledWith(mockMemory.id)
+            expect(mockReply.status).toHaveBeenCalledWith(200)
+            expect(mockReply.send).toHaveBeenCalledWith(mockMemory)
+        })
+    })
+
 })
 
 
