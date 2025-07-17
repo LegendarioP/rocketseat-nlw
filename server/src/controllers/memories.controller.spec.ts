@@ -236,6 +236,21 @@ describe("MemoriesController", () => {
             })
         })
 
+        it("Deve retornar erro 404 quando memória não é encontrada", async () => {
+            const mockRequestWithParams = {
+                user: { sub: "test-user-id" },
+                params: { id: "550e8400-e29b-41d4-a716-446655440000" },
+                body: {},
+            };
+
+            (memoriesService.getById as jest.Mock).mockRejectedValue(new MemoryNotFoundError("Memory not found"))
+
+            await MemoriesController.getById(mockRequestWithParams as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(404)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "Memory not found" })
+        })
+
 
     })
 
