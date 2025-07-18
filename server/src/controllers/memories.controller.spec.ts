@@ -298,6 +298,25 @@ describe("MemoriesController", () => {
             expect(mockReply.status).toHaveBeenCalledWith(401)
             expect(mockReply.send).toHaveBeenCalledWith({ error: 'Unauthorized' })
         })
+        it("Deve retornar o 404 com o MemoryNotFoundError", async () => {
+            const mockMemoryId = "550e8400-e29b-41d4-a716-446655440000";
+            const mockRequestWithParamsAndBody = {
+                user: { sub: "test-user-id" },
+                params: { id: mockMemoryId },
+                body: {
+                    content: "Updated memory",
+                    coverUrl: "http://example.com/img-updated.png",
+                    isPublic: false,
+                }
+            };
+
+            (memoriesService.update as jest.Mock).mockRejectedValue(new MemoryNotFoundError);
+
+            await MemoriesController.updateMemory(mockRequestWithParamsAndBody as any, mockReply as any);
+
+            expect(mockReply.status).toHaveBeenCalledWith(404);
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "Memória não encontrada" });
+        });
     })
 
 })
