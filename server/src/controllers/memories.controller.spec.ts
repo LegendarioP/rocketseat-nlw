@@ -1,5 +1,6 @@
 import { MemoriesController, memoriesService } from "./memories.controller"
 import { CreateMemoryError, MemoryNotFoundError } from "../errors/memorie-error"
+import z from "zod"
 
 // Mock do service
 jest.mock("../services/memories.service", () => ({
@@ -399,7 +400,25 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith({ error: "Memória não encontrada" })
         })
 
+        it("Deve retornar erro 400 quando houver erros de validação", async () => {
+            const mockRequestWithInvalidId = {
+                user: { sub: "test-user-id" },
+                params: { id: "invalid-id" }, 
+                body: {},
+            };
+
+            await MemoriesController.deleteMemory(mockRequestWithInvalidId as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(400)
+            expect(mockReply.send).toHaveBeenCalledWith({
+                error: 'Invalid parameters',
+                details: expect.any(Array)
+            })
+        })
+
     })
+
+
 
 })
 
