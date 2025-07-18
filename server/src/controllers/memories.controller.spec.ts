@@ -353,6 +353,27 @@ describe("MemoriesController", () => {
         })
     })
 
+    describe("Delete Memory Route", () => {
+        it("Deve deletar uma memória existente", async () => {
+            const mockMemoryId = "550e8400-e29b-41d4-a716-446655440000";
+
+            const mockRequestWithParams = {
+                user: { sub: "test-user-id" },
+                params: { id: mockMemoryId },
+                body: {},
+            };
+
+            (memoriesService.delete as jest.Mock).mockResolvedValue({ message: "Memory deleted successfully" })
+
+            await MemoriesController.deleteMemory(mockRequestWithParams as any, mockReply as any)
+
+            expect(memoriesService.delete).toHaveBeenCalledWith(mockMemoryId)
+            expect(mockReply.status).toHaveBeenCalledWith(204)
+            expect(mockReply.send).toHaveBeenCalledWith({ message: "Memory deleted successfully" })
+        })
+
+    })
+
 })
 
 
