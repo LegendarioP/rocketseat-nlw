@@ -465,7 +465,16 @@ describe("MemoriesController", () => {
             expect(mockReply.status).toHaveBeenCalledWith(200)
             expect(mockReply.send).toHaveBeenCalledWith(mockPublicMemories)
         })
+        it("Deve retornar erro 404 quando não há memórias públicas", async () => {
+            (memoriesService.getPublicMemories as jest.Mock).mockRejectedValue(new MemoryNotFoundError("No public memories found"))
 
+            const mockPublicRequest = { body: {} };
+
+            await MemoriesController.getPublicMemories(mockPublicRequest as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(404)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "No public memories found" })
+        })
 
     })
 
