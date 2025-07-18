@@ -317,6 +317,21 @@ describe("MemoriesController", () => {
             expect(mockReply.status).toHaveBeenCalledWith(404);
             expect(mockReply.send).toHaveBeenCalledWith({ error: "Memória não encontrada" });
         });
+
+        it("Deve retornar erro 400 quando dados são inválidos", async () => {
+            mockRequest.body = {
+                coverUrl: "http://example.com/img.png",
+            }
+
+            await MemoriesController.updateMemory(mockRequest as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(400)
+            expect(mockReply.send).toHaveBeenCalledWith({
+                error: 'Invalid data',
+                details: expect.any(Array)
+
+            })
+        })
     })
 
 })
