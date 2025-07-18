@@ -332,6 +332,25 @@ describe("MemoriesController", () => {
 
             })
         })
+
+        it("Deve retornar erro 500 quando houver erro no lado do servidor", async () => {
+            const mockRequestWithParamsAndBody = {
+            user: { sub: "test-user-id" },
+            params: { id: "550e8400-e29b-41d4-a716-446655440000" },
+            body: {
+                content: "Updated memory",
+                coverUrl: "http://example.com/img-updated.png",
+                isPublic: true,
+            }
+            };
+
+            (memoriesService.update as jest.Mock).mockRejectedValue(new Error("An error occurred while updating the memory"));
+
+            await MemoriesController.updateMemory(mockRequestWithParamsAndBody as any, mockReply as any);
+
+            expect(mockReply.status).toHaveBeenCalledWith(500);
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "An error occurred while updating the memory" });
+        })
     })
 
 })
