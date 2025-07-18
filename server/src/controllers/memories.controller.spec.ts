@@ -416,6 +416,21 @@ describe("MemoriesController", () => {
             })
         })
 
+        it("Deve retornar erro 500 quando houver erro no lado do servidor", async () => {
+            const mockRequestWithParams = {
+                user: { sub: "test-user-id" },
+                params: { id: "550e8400-e29b-41d4-a716-446655440000" },
+                body: {},
+            };
+
+            (memoriesService.delete as jest.Mock).mockRejectedValue(new Error("An error occurred while deleting the memory"));
+
+            await MemoriesController.deleteMemory(mockRequestWithParams as any, mockReply as any);
+
+            expect(mockReply.status).toHaveBeenCalledWith(500);
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "An error occurred while deleting the memory" });
+        })
+
     })
 
 
