@@ -252,6 +252,21 @@ describe("MemoriesController", () => {
             expect(mockReply.send).toHaveBeenCalledWith({ error: "Memory not found" })
         })
 
+        it("Deve retornar erro 500 quando houver algum problema ao buscar a memória", async () => {
+            const mockRequestWithParams = {
+                user: { sub: "test-user-id" },
+                params: { id: "550e8400-e29b-41d4-a716-446655440000" },
+                body: {},
+            };
+
+            (memoriesService.getById as jest.Mock).mockRejectedValue(new Error("An error occurred while fetching the memory"))
+
+            await MemoriesController.getById(mockRequestWithParams as any, mockReply as any)
+
+            expect(mockReply.status).toHaveBeenCalledWith(500)
+            expect(mockReply.send).toHaveBeenCalledWith({ error: "An error occurred while fetching the memory" })
+        })
+
     })
 
     describe("Update Memory Route", () => {
@@ -465,7 +480,7 @@ describe("MemoriesController", () => {
             expect(mockReply.status).toHaveBeenCalledWith(200)
             expect(mockReply.send).toHaveBeenCalledWith(mockPublicMemories)
         })
-        
+
         it("Deve retornar erro 404 quando não há memórias públicas", async () => {
             (memoriesService.getPublicMemories as jest.Mock).mockRejectedValue(new MemoryNotFoundError("No public memories found"))
 
