@@ -433,6 +433,42 @@ describe("MemoriesController", () => {
 
     })
 
+    describe("Get Public Memories Route", () => {
+        it("Deve retornar todas as memórias públicas", async () => {
+            const mockPublicMemories = [
+                {
+                    id: "memory-1",
+                    content: "Memória pública 1",
+                    coverUrl: "http://example.com/public1.png",
+                    isPublic: true,
+                    userId: "user-1",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    id: "memory-2",
+                    content: "Memória pública 2",
+                    coverUrl: "http://example.com/public2.png",
+                    isPublic: true,
+                    userId: "user-2",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }
+            ];
+
+            (memoriesService.getPublicMemories as jest.Mock).mockResolvedValue(mockPublicMemories)
+            const mockPublicRequest = { body: {} };
+
+            await MemoriesController.getPublicMemories(mockPublicRequest as any, mockReply as any)
+
+            expect(memoriesService.getPublicMemories).toHaveBeenCalledWith()
+            expect(mockReply.status).toHaveBeenCalledWith(200)
+            expect(mockReply.send).toHaveBeenCalledWith(mockPublicMemories)
+        })
+
+
+    })
+
 
 
 })
